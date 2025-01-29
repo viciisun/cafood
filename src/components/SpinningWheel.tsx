@@ -120,10 +120,7 @@ export default function SpinningWheel({ shops, onSpinEnd }: SpinningWheelProps) 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   
   // 窗口宽度状态（用于响应式）
-  const [windowWidth, setWindowWidth] = useState(() => {
-    if (typeof window === 'undefined') return 1024
-    return window.innerWidth
-  })
+  const [windowWidth] = useState(window.innerWidth)
 
   // 定时器引用
   const spinTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -228,49 +225,6 @@ export default function SpinningWheel({ shops, onSpinEnd }: SpinningWheelProps) 
   }
 
   const wheelSize = windowWidth < 768 ? 320 : 500
-
-  // 调整颜色深浅
-  function adjustColor(color: string, amount: number): string {
-    const hex = color.replace('#', '')
-    const num = parseInt(hex, 16)
-    let r = (num >> 16) + amount
-    let g = ((num >> 8) & 0x00FF) + amount
-    let b = (num & 0x0000FF) + amount
-    
-    r = Math.min(Math.max(0, r), 255)
-    g = Math.min(Math.max(0, g), 255)
-    b = Math.min(Math.max(0, b), 255)
-    
-    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
-  }
-
-  // 获取对比色
-  function getComplementaryColor(color: string): string {
-    const hex = color.replace('#', '')
-    const num = parseInt(hex, 16)
-    const complement = 0xFFFFFF ^ num
-    return `#${complement.toString(16).padStart(6, '0')}`
-  }
-
-  // 添加颜色混合函数
-  function blendColors(color1: string, color2: string, ratio: number): string {
-    const hex1 = color1.replace('#', '')
-    const hex2 = color2.replace('#', '')
-    
-    const r1 = parseInt(hex1.substr(0, 2), 16)
-    const g1 = parseInt(hex1.substr(2, 2), 16)
-    const b1 = parseInt(hex1.substr(4, 2), 16)
-    
-    const r2 = parseInt(hex2.substr(0, 2), 16)
-    const g2 = parseInt(hex2.substr(2, 2), 16)
-    const b2 = parseInt(hex2.substr(4, 2), 16)
-    
-    const r = Math.round(r1 * ratio + r2 * (1 - ratio))
-    const g = Math.round(g1 * ratio + g2 * (1 - ratio))
-    const b = Math.round(b1 * ratio + b2 * (1 - ratio))
-    
-    return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`
-  }
 
   return (
     <div className="relative mx-auto" style={{ width: wheelSize, height: wheelSize }}>

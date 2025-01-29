@@ -7,7 +7,14 @@ interface ShopCardProps {
 
 export default function ShopCard({ shop }: ShopCardProps) {
   const priceSymbol = '¥'.repeat(shop.priceLevel)
-  const images = JSON.parse(shop.images as string) as string[]
+  let images: string[] = []
+  
+  try {
+    images = JSON.parse(shop.images as string)
+  } catch (error) {
+    console.warn('Failed to parse shop images:', error)
+    images = []
+  }
   
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">

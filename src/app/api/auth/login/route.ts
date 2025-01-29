@@ -56,10 +56,10 @@ export async function POST(req: Request) {
         })
 
         return response
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { error: '登录失败' },
-            { status: 500 }
+            { status: 401 }
         )
     }
 } 

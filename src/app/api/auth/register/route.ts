@@ -45,10 +45,10 @@ export async function POST(req: Request) {
             { message: '注册成功', userId: user.id },
             { status: 201 }
         )
-    } catch (error) {
+    } catch {
         return NextResponse.json(
-            { error: '注册失败' },
-            { status: 500 }
+            { message: '注册失败' },
+            { status: 400 }
         )
     }
 } 

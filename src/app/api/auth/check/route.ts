@@ -16,10 +16,7 @@ export async function GET() {
 
     const decoded = verify(token.value, process.env.JWT_SECRET || 'your-secret-key')
     return NextResponse.json({ user: decoded })
-  } catch (error) {
-    return NextResponse.json(
-      { error: '认证失败' },
-      { status: 401 }
-    )
+  } catch {
+    return NextResponse.json({ isAuthenticated: false }, { status: 401 })
   }
 } 
