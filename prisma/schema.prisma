@@ -1,0 +1,77 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id            String    @id @default(cuid())
+    email         String    @unique
+    username      String    @unique
+    password      String
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    emailVerified DateTime?
+    image         String?
+    role          Role      @default(USER)
+    shops         Shop[]
+    reviews       Review[]
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+enum ShopType {
+    CAFE
+    RESTAURANT
+    FASTFOOD
+    DESSERT
+    BAKERY
+    BAR
+}
+
+enum ShopStatus {
+    OPEN
+    CLOSED
+    TEMPORARILY_CLOSED
+}
+
+model Shop {
+    id          String     @id @default(cuid())
+    name        String
+    type        ShopType
+    status      ShopStatus @default(OPEN)
+    address     String
+    latitude    Float
+    longitude   Float
+    rating      Float      @default(0)
+    ratingCount Int        @default(0)
+    description String?    @db.Text
+    images      Json       @default("[]")
+    priceLevel  Int        @default(2) // 1-4, 表示价格等级
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    reviews     Review[]
+    createdBy   User       @relation(fields: [userId], references: [id])
+    userId      String
+
+    @@unique([name, userId]) // 添加复合唯一约束
+}
+
+model Review {
+    id        String   @id @default(cuid())
+    rating    Int // 1-5
+    content   String   @db.Text
+    images    Json     @default("[]")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+    shopId    String
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+}
